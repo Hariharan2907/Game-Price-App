@@ -62,9 +62,9 @@ def index():
         game_thumbnail = None
         game_namespace = game['namespace']
 
-        #Retrieves url for thumbnail (not used yet)
+        #Retrieves url for thumbnail 
         for image in game['keyImages']:
-            if image['type'] == 'Thumbnail':
+            if image['type'] == 'OfferImageWide':
                 game_thumbnail = image['url']
         
         
@@ -107,7 +107,8 @@ def index():
             'initialprice' : game_oprice,
             'discount' : discount,
             'store' : 'Epic Games',
-            'link' : epic_url        
+            'link' : epic_url,
+            'thumbnail' : game_thumbnail        
         }
 
         games_list.append(game_data)
@@ -121,7 +122,8 @@ def index():
             'initialprice' : i['price']['baseAmount'],
             'discount' : i['price']['discountPercentage'],
             'store' : 'GOG',
-            'link' : ("https://www.gog.com" + i['url'])
+            'link' : ("https://www.gog.com" + i['url']),
+            'thumbnail' : (i['image'] + "_product_tile_398_2x.jpg")
         }
         games_list.append(game_data)
     #----------------------------------------------
@@ -139,7 +141,9 @@ def index():
             'initialprice' : initial_price,
             'discount' : discount,
             'store' : 'Steam',
-            'link' : ("https://store.steampowered.com/app/" + str(steam_games[i]['appid']))
+            'link' : ("https://store.steampowered.com/app/" + str(steam_games[i]['appid'])),
+            'thumbnail' : ('https://cdn.cloudflare.steamstatic.com/steam/apps/' + str(steam_games[i]['appid']) + '/header.jpg')
+        
         }
         games_list.append(game_data)
     #----------------------------------------------

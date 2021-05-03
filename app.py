@@ -3,7 +3,7 @@ import requests
 import json
 from epicstore_api import EpicGamesStoreAPI
 from datetime import datetime
-
+from operator import itemgetter 
   
 app = Flask(__name__)
 
@@ -78,7 +78,7 @@ def index():
 
         #Calculates Discount in percent
         try:
-            discount = round(((game_oprice-game_dprice)/game_oprice)*100,1)
+            discount = round(((game_oprice-game_dprice)/game_oprice)*100,0)
         except ZeroDivisionError:
             discount = 0
 
@@ -116,10 +116,11 @@ def index():
 
     #GOG API---------------------------------------
     for i in gog_games['products']:
+        
         game_data = {
             'title' : i['title'],
-            'price' : i['price']['amount'],
-            'initialprice' : i['price']['baseAmount'],
+            'price' : float(i['price']['amount']),
+            'initialprice' : float(i['price']['baseAmount']),
             'discount' : i['price']['discountPercentage'],
             'store' : 'GOG',
             'link' : ("https://www.gog.com" + i['url']),
@@ -132,7 +133,7 @@ def index():
     for i in steam_games:
         price1 = float(steam_games[i]['price'])/100
         initial_price = float(steam_games[i]['initialprice'])/100
-        discount = float(steam_games[i]['discount'])
+        discount = int(steam_games[i]['discount'])
 
         game_data = {
             'appid' : steam_games[i]['appid'],
@@ -147,10 +148,16 @@ def index():
         }
         games_list.append(game_data)
     #----------------------------------------------
-
+    games_list.sort(key=itemgetter("price"))
+    #games_list = sorted(games_list, key = lambda i: i['price'])
     #Implements Search Functionality
+    for i in games_list:
+        i['price']=format(i['price'],".2f")
+        i['initialprice']=format(i['initialprice'],".2f")
+
     if q:
         games_list = [games for games in games_list if q.lower() in games['title'].lower()]
+        
     else:
         games_list
            
